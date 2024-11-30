@@ -1,66 +1,19 @@
-## Foundry
+## GasTank
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+**GasTank** is an experimental Ethereum token that derives its value from gas consumption on the Ethereum network. It is designed to challenge the boundaries of decentralized systems by gamifying gas consumption and acting as a store of value for unused block space. 
 
-Foundry consists of:
+### Key Features
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- **Fair Launch**: Tokens are minted by burning gas, making it one of the fairest token launches on Ethereum.
+- **Supply Mechanism**: Initially, each block can mint a maximum of less than 840 tokens, with a yearly halving mechanism in place to reduce supply over time.
 
-## Documentation
+### How to Contribute
 
-https://book.getfoundry.sh/
+- **Early Minting**: Engage with the contract by minting tokens and contributing to the network's dynamics.
+- **Liquidity Pool**: Consider starting a liquidity pool to enhance the token's utility and market presence.
 
-## Usage
+For more details, please refer to the [GasTank.sol](src/GasTank.sol) contract and the deployment script [GasTank.s.sol](script/GasTank.s.sol).
 
-### Build
+## License
 
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
