@@ -101,7 +101,7 @@ contract GasTankTest is Test {
         // Move forward in time to simulate a halving interval passing.
         uint256 currentBlock = block.number;
         // Roll forward by HALVING_BLOCKS (simulate passing of ~2 years)
-        vm.roll(currentBlock + GasTank.HALVING_BLOCKS());
+        vm.roll(currentBlock + gasTank.getHalvingBlocks());
 
         // Next mint should trigger halving.
         string memory postHalvingMessage = "Mint after halving";

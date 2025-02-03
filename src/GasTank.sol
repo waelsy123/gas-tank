@@ -25,8 +25,8 @@ import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20P
 
 contract GasTank is ERC20, ERC20Permit {
     /**
-     * @dev Every 5,256,000 blocks (~2 years), the minting power is further reduced 
-     *      due to incremental halvings. This figure is slightly reduced (5,256,000 
+     * @dev Every 5,256,000 blocks (~2 years), the minting power is further reduced
+     *      due to incremental halvings. This figure is slightly reduced (5,256,000
      *      vs. the original 5,256,000 from the text) for approximate 2-year intervals.
      */
     uint256 public constant HALVING_BLOCKS = 5256000; // approximately 2 years in blocks
@@ -48,7 +48,7 @@ contract GasTank is ERC20, ERC20Permit {
     uint256 public lastHalvingBlock;
 
     /**
-     * @dev Tracks the number of mints per block. Used to determine how much reward 
+     * @dev Tracks the number of mints per block. Used to determine how much reward
      *      to give each subsequent minter in the same block (halved successively).
      */
     mapping(uint256 => uint256) public blockMintCount;
@@ -65,7 +65,7 @@ contract GasTank is ERC20, ERC20Permit {
     event Minted(address indexed minter, uint256 indexed blockNumber, uint256 reward, string message);
 
     /**
-     * @dev Constructor sets the token name, symbol, and permit domain, 
+     * @dev Constructor sets the token name, symbol, and permit domain,
      *      initializing halving-related state.
      */
     constructor() ERC20("GasTank", "TANK") ERC20Permit("GasTank") {
@@ -94,11 +94,9 @@ contract GasTank is ERC20, ERC20Permit {
      * @param message Custom message to be emitted in the `Message` event.
      * @param maxBlockMintCount User-defined maximum block mint count to protect from miner front-running.
      */
-    function mint(string calldata message, uint8 maxBlockMintCount)
-        external
-        noContract(msg.sender)
-    {
-        require(blockMintCount[block.number] <= maxBlockMintCount, "Block mint count exceeded"); // to protect miner from being front-run
+    function mint(string calldata message, uint8 maxBlockMintCount) external noContract(msg.sender) {
+        // Now using `<` so that if the count is equal to maxBlockMintCount, further mints revert.
+        require(blockMintCount[block.number] < maxBlockMintCount, "Block mint count exceeded");
 
         // Check if a halving interval has passed since lastHalvingBlock
         if (block.number >= lastHalvingBlock + HALVING_BLOCKS) {
@@ -106,17 +104,15 @@ contract GasTank is ERC20, ERC20Permit {
             halvings++;
         }
 
-        // Bump the block’s mint count and determine the exponent for halving.
+        // Increment the block’s mint count and compute the reward
         uint256 currentCount = ++blockMintCount[block.number];
-
-        // reward will be more than zero as long as exponent is < 69
         uint256 exponent = currentCount + halvings - 1;
         uint256 reward = tokensPerMint / (2 ** exponent);
 
         // Mint to the caller
         _mint(msg.sender, reward);
 
-        // Emit custom message and an extended mint event
+        // Emit custom message
         emit Message(message);
     }
 
@@ -136,8 +132,15 @@ contract GasTank is ERC20, ERC20Permit {
     }
 
     /**
+     * @notice Returns the number of blocks corresponding to one halving interval.
+     */
+    function getHalvingBlocks() external pure returns (uint256) {
+        return HALVING_BLOCKS;
+    }
+
+    /**
      * @notice (Additional) Estimates the next reward for the very next minter in the current block.
-     *         This does not account for a potential halving if the block changes, but 
+     *         This does not account for a potential halving if the block changes, but
      *         provides an approximate idea if no new halving is triggered before you mint.
      * @return nextReward The computed reward for the next mint caller.
      */
