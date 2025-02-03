@@ -118,7 +118,6 @@ contract GasTank is ERC20, ERC20Permit {
 
         // Emit custom message and an extended mint event
         emit Message(message);
-        emit Minted(msg.sender, block.number, reward, message);
     }
 
     /**
